@@ -8,6 +8,13 @@ import javax.validation.constraints.Size;
 //Customer table representation
 @Entity
 @Table(name = "customer", uniqueConstraints = {@UniqueConstraint(columnNames = {"uuid","contact_number"})})
+@NamedQueries(
+        {
+
+                @NamedQuery(name = "customerByContactNumber", query = "SELECT c from CustomerEntity c where c.contactNumber = :contact_number"),
+                @NamedQuery(name = "customerByUuid", query = "SELECT c from CustomerEntity c where c.uuid = :uuid")
+        }
+)
 public class CustomerEntity implements Serializable {
     @Id
     @Column(name = "id")
