@@ -31,7 +31,7 @@ public class CustomerController {
     UtilityProvider utilityProvider; //Validity check handler
 
 
-    //Request: customer/signup
+    //Request: /customer/signup
     @CrossOrigin
     @RequestMapping(method = RequestMethod.POST,path = "/signup",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SignupCustomerResponse> signUpCustomer(@RequestBody(required = false)  final SignupCustomerRequest signupCustomerRequest)throws SignUpRestrictedException {
@@ -49,7 +49,7 @@ public class CustomerController {
     }
 
 
-    //Request: customer/login
+    //Request: /customer/login
     @CrossOrigin
     @RequestMapping(method = RequestMethod.POST,path = "/login",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<LoginResponse> customerLogin (@RequestHeader("authorization") final String authorization)throws AuthenticationFailedException {
@@ -77,7 +77,7 @@ public class CustomerController {
     }
 
 
-    //Request: customer/logout
+    //Request: /customer/logout
     @CrossOrigin
     @RequestMapping(method = RequestMethod.POST,path = "/logout",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<LogoutResponse> customerLogout (@RequestHeader("authorization")final String authorization)throws AuthorizationFailedException {
@@ -92,7 +92,7 @@ public class CustomerController {
         return new ResponseEntity<LogoutResponse>(logoutResponse,HttpStatus.OK);
     }
 
-    //Request: customer/
+    //Request: /customer
     @CrossOrigin
     @RequestMapping(method = RequestMethod.PUT,path = "",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<UpdateCustomerResponse> updateCustomerDetails(@RequestHeader("authorization")final String authorization,@RequestBody(required = false) UpdateCustomerRequest updateCustomerRequest)throws AuthorizationFailedException,UpdateCustomerException{
@@ -110,7 +110,7 @@ public class CustomerController {
         return new ResponseEntity<UpdateCustomerResponse>(updateCustomerResponse,HttpStatus.OK);
     }
 
-    //Request: customer/password
+    //Request: /customer/password
     @CrossOrigin
     @RequestMapping(method = RequestMethod.PUT,path = "/password",consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<UpdatePasswordResponse> updateCustomerPassword(@RequestHeader ("authorization") final String authorization,@RequestBody(required = false) UpdatePasswordRequest updatePasswordRequest)throws AuthorizationFailedException,UpdateCustomerException{
