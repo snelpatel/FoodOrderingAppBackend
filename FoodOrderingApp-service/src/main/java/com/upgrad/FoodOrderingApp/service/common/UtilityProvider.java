@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UtilityProvider {
 
-    //Method to validate the password for given conditions,1 Uppercase letter,1 Lowercase letter,1 Number,1 Special Character and atleast 8 characters
+    //Method to validate the password for given conditions,1 Uppercase letter,1 Number,1 Special Character and atleast 8 characters
     public boolean isValidPassword(String password){
         Boolean lowerCase = false;
         Boolean upperCase = false;
