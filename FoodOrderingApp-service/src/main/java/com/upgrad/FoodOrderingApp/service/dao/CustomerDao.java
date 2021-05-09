@@ -1,50 +1,53 @@
 package com.upgrad.FoodOrderingApp.service.dao;
 
-//Methods to access database related to Customer Entity
-
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import org.springframework.stereotype.Repository;
+
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 @Repository
 public class CustomerDao {
-    @PersistenceContext
-    private EntityManager entityManager;
 
-    //Method to get customer by Contact number, returns null if no results found
-    public CustomerEntity getCustomerByContactNumber (final String contact_number){
-        try{
-            CustomerEntity customer = entityManager.createNamedQuery("customerByContactNumber",CustomerEntity.class).setParameter("contact_number",contact_number).getSingleResult();
-            return customer;
-        }catch (NoResultException nre){
-            return null;
-        }
-    }
+    @PersistenceContext private EntityManager entityManager;
 
-    //Method to save new customer entity
-    public CustomerEntity createCustomer(CustomerEntity customerEntity){
+    /**
+     *
+     *
+     * @param customerEntity for creating new customer.
+     * @return CustomerEntity object.
+     */
+    public CustomerEntity saveCustomer(final CustomerEntity customerEntity) {
         entityManager.persist(customerEntity);
         return customerEntity;
     }
 
-    //Method to update customer
-    public CustomerEntity updateCustomer(CustomerEntity customerToBeUpdated){
-        entityManager.merge(customerToBeUpdated);
-        return customerToBeUpdated;
-    }
-
-    //Method to find customer by UUID
-    public CustomerEntity getCustomerByUuid (final String uuid){
+    /**
+     *
+     *
+     * @param contactNumber already registered with this number
+     * @return CustomerEntity number exists in the database
+     */
+    public CustomerEntity getCustomerByContactNumber(final String contactNumber) {
         try {
-            CustomerEntity customer = entityManager.createNamedQuery("customerByUuid",CustomerEntity.class).setParameter("uuid",uuid).getSingleResult();
-            return customer;
-        }catch (NoResultException nre){
+            return entityManager
+                    .createNamedQuery("customerByContactNumber", CustomerEntity.class)
+                    .setParameter("contactNumber", contactNumber)
+                    .getSingleResult();
+        } catch (NoResultException nre) {
             return null;
         }
     }
 
-
-
+    /**
+     *
+     *
+     * @param customerEntity update.
+     * @return Updated  object.
+     */
+    public CustomerEntity updateCustomer(final CustomerEntity customerEntity) {
+        entityManager.merge(customerEntity);
+        return customerEntity;
+    }
 }
