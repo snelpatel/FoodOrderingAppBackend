@@ -1,27 +1,42 @@
 package com.upgrad.FoodOrderingApp.service.entity;
 
-//address table representation
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.io.Serializable;
-import org.hibernate.annotations.ColumnDefault;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-@Entity
-@Table (name = "address",uniqueConstraints = {@UniqueConstraint(columnNames = {"uuid"})})
-@NamedQueries({
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
 
-        @NamedQuery(name = "getAddressByUuid",query = "SELECT a from AddressEntity a where a.uuid = :uuid"),
+@Entity
+@Table(name = "address")
+@NamedQueries({
+        @NamedQuery(
+                name = "addressByUUID",
+                query = "select a from AddressEntity a where a.uuid=:addressUUID")
 })
-public class AddressEntity implements Serializable{
+public class AddressEntity implements Serializable {
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "uuid")
+    @Column(name = "uuid", unique = true)
     @Size(max = 200)
     @NotNull
     private String uuid;
@@ -38,29 +53,33 @@ public class AddressEntity implements Serializable{
     @Size(max = 30)
     private String city;
 
-    @Column(name = "pincode")
     @Size(max = 30)
+    @Column(name = "pincode")
     private String pincode;
 
-    @Column(name = "active")
-    private Integer active = 1;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "state_id")
+    @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "state_id")
     private StateEntity state;
 
-    public AddressEntity(){
-    }
+    @Column(name = "active")
+    private Integer active;
 
-    public AddressEntity(String uuid, String flatBuilNo, String locality, String city, String pincode, StateEntity stateEntity) {
+    public AddressEntity() {}
+
+    public AddressEntity(
+            @Size(max = 200) @NotNull String uuid,
+            @Size(max = 255) String flatBuilNo,
+            @Size(max = 255) String locality,
+            @Size(max = 30) String city,
+            @Size(max = 30) String pincode,
+            StateEntity state) {
         this.uuid = uuid;
-        this.flatBuilNo =flatBuilNo;
+        this.flatBuilNo = flatBuilNo;
         this.locality = locality;
         this.city = city;
         this.pincode = pincode;
-        this.state = stateEntity;
-        return;
+        this.state = state;
     }
 
     public Integer getId() {
@@ -111,14 +130,6 @@ public class AddressEntity implements Serializable{
         this.pincode = pincode;
     }
 
-    public Integer getActive() {
-        return active;
-    }
-
-    public void setActive(Integer active) {
-        this.active = active;
-    }
-
     public StateEntity getState() {
         return state;
     }
@@ -127,4 +138,26 @@ public class AddressEntity implements Serializable{
         this.state = state;
     }
 
+    public Integer getActive() {
+        return active;
+    }
+
+    public void setActive(Integer active) {
+        this.active = active;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return new EqualsBuilder().append(this, obj).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(this).hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+    }
 }

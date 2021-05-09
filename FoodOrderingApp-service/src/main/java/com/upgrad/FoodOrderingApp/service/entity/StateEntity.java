@@ -1,43 +1,45 @@
 package com.upgrad.FoodOrderingApp.service.entity;
-//state table representation
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import javax.persistence.*;
-import java.io.Serializable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
+import java.io.Serializable;
 
 @Entity
-@Table(name = "state",uniqueConstraints = {@UniqueConstraint(columnNames = {"uuid"})})
+@Table(name = "state")
 @NamedQueries({
-
-        @NamedQuery(name = "getStateByUuid", query = "SELECT s from StateEntity s where s.stateUuid = :uuid"),
-        @NamedQuery(name = "getAllStates",query = "SELECT s from StateEntity s"),
+        @NamedQuery(
+                name = "getStateByUuid",
+                query = "select s from StateEntity s where s.uuid=:stateUuid"),
+        @NamedQuery(name = "getAllStates", query = "select s from StateEntity s")
 })
-public class StateEntity implements Serializable{
+public class StateEntity implements Serializable {
+
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
 
-
-    @Column(name = "uuid")
     @Size(max = 200)
     @NotNull
-    private String stateUuid;
+    @Column(name = "uuid", unique = true)
+    private String uuid;
 
-
-    @Column(name = "state_name")
     @Size(max = 30)
+    @Column(name = "state_name")
     private String stateName;
 
-    public StateEntity(String stateUuid, String stateName) {
-        this.stateUuid = stateUuid;
+    public StateEntity() {}
+
+    public StateEntity(
+            @NotNull @Size(max = 200) String uuid, @NotNull @Size(max = 30) String stateName) {
+        this.uuid = uuid;
         this.stateName = stateName;
-        return;
-    }
-
-    public StateEntity() {
-
     }
 
     public Integer getId() {
@@ -48,12 +50,12 @@ public class StateEntity implements Serializable{
         this.id = id;
     }
 
-    public String getStateUuid() {
-        return stateUuid;
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setStateUuid(String stateUuid) {
-        this.stateUuid = stateUuid;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getStateName() {
@@ -62,5 +64,20 @@ public class StateEntity implements Serializable{
 
     public void setStateName(String stateName) {
         this.stateName = stateName;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return new EqualsBuilder().append(this, obj).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(this).hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
 }

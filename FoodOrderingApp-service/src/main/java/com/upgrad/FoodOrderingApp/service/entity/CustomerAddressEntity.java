@@ -1,32 +1,44 @@
 package com.upgrad.FoodOrderingApp.service.entity;
-//customer_address table representation
-import java.io.Serializable;
-import javax.persistence.*;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
+import java.io.Serializable;
+
 @Entity
 @Table(name = "customer_address")
-
 @NamedQueries({
-        @NamedQuery(name = "getAllCustomerAddressByCustomer",query = "SELECT c from CustomerAddressEntity c where c.customer = :customer_entity AND c.address.active = :active"),
-        @NamedQuery(name = "getCustomerAddressByAddress",query = "SELECT c from CustomerAddressEntity c where c.address = :address_entity")
+        @NamedQuery(
+                name = "customerAddressByCustomer",
+                query = "select ca FROM CustomerAddressEntity ca where ca.customer = :customer"),
+        @NamedQuery(
+                name = "customerAddressByAddress",
+                query = "select ca from CustomerAddressEntity ca where ca.address = :address")
 })
-
 public class CustomerAddressEntity implements Serializable {
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "customer_id")
+    @ManyToOne
+    @NotNull
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "customer_id")
     private CustomerEntity customer;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
+    @NotNull
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "address_id")
-    @OnDelete(action = OnDeleteAction.NO_ACTION)
     private AddressEntity address;
 
     public Integer getId() {
@@ -51,5 +63,20 @@ public class CustomerAddressEntity implements Serializable {
 
     public void setAddress(AddressEntity address) {
         this.address = address;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return new EqualsBuilder().append(this, obj).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(this).hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
 }
