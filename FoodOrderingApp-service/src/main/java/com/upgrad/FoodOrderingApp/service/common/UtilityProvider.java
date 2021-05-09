@@ -1,3 +1,4 @@
+/* // Not needed as of now
 package com.upgrad.FoodOrderingApp.service.common;
 //This class provides various utility methods for customer entity
 
@@ -140,3 +141,4 @@ public class UtilityProvider {
         return sortedByValueMap;
     }
 }
+*/
