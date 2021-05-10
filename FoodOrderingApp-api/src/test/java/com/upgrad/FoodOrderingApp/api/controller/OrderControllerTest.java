@@ -5,6 +5,13 @@ import com.upgrad.FoodOrderingApp.api.model.CustomerOrderResponse;
 import com.upgrad.FoodOrderingApp.api.model.ItemQuantity;
 import com.upgrad.FoodOrderingApp.api.model.SaveOrderRequest;
 import com.upgrad.FoodOrderingApp.service.exception.*;
+import com.upgrad.FoodOrderingApp.api.model.ItemListResponse;
+import com.upgrad.FoodOrderingApp.service.businness.ItemService;
+import com.upgrad.FoodOrderingApp.service.businness.RestaurantService;
+import com.upgrad.FoodOrderingApp.service.entity.ItemEntity;
+import com.upgrad.FoodOrderingApp.service.entity.RestaurantEntity;
+import com.upgrad.FoodOrderingApp.service.exception.RestaurantNotFoundException;
+import com.upgrad.FoodOrderingApp.service.businness.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,19 +21,23 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-
+import com.upgrad.FoodOrderingApp.service.entity.*;
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.Date;
 import java.util.UUID;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.ZonedDateTime;
 
+import com.upgrad.FoodOrderingApp.service.entity.OrdersEntity;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import static org.junit.Assert.assertEquals;
+import com.upgrad.FoodOrderingApp.service.businness.*;
 // This class contains all the test cases regarding the order controller
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -74,7 +85,7 @@ public class OrderControllerTest {
         when(mockOrderService.getCouponByCouponId(saveOrderRequest.getCouponId().toString()))
                 .thenReturn(new CouponEntity());
 
-        final OrderEntity orderEntity = new OrderEntity();
+        final OrdersEntity orderEntity = new OrdersEntity();
         final String orderId = UUID.randomUUID().toString();
         orderEntity.setUuid(orderId);
         when(mockOrderService.saveOrder(any())).thenReturn(orderEntity);
@@ -358,7 +369,7 @@ public class OrderControllerTest {
         when(mockCustomerService.getCustomer("database_accesstoken2"))
                 .thenReturn(customerEntity);
 
-        final OrderEntity orderEntity = getOrderEntity(customerEntity);
+        final OrdersEntity orderEntity = getOrderEntity(customerEntity);
         when(mockOrderService.getOrdersByCustomers(customerId))
                 .thenReturn(Collections.singletonList(orderEntity));
 
@@ -375,7 +386,7 @@ public class OrderControllerTest {
         assertEquals(customerOrderResponse.getOrders().get(0).getId().toString(), orderEntity.getUuid());
         assertEquals(customerOrderResponse.getOrders().get(0).getCustomer().getId().toString(), orderEntity.getCustomer().getUuid());
         assertEquals(customerOrderResponse.getOrders().get(0).getAddress().getId().toString(), orderEntity.getAddress().getUuid());
-        assertEquals(customerOrderResponse.getOrders().get(0).getAddress().getState().getId().toString(), orderEntity.getAddress().getState().getUuid());
+        assertEquals(customerOrderResponse.getOrders().get(0).getAddress().getState().getId().toString(), orderEntity.getAddress().getState().getStateUuid());
 
         verify(mockCustomerService, times(1)).getCustomer("database_accesstoken2");
         verify(mockOrderService, times(1)).getOrdersByCustomers(customerId);
@@ -575,7 +586,7 @@ public class OrderControllerTest {
         return request;
     }
 
-    private OrderEntity getOrderEntity(final CustomerEntity customerEntity) {
+    private OrdersEntity getOrderEntity(final CustomerEntity customerEntity) {
         final String stateId = UUID.randomUUID().toString();
         final StateEntity stateEntity = new StateEntity(stateId, "someState");
 
@@ -601,8 +612,9 @@ public class OrderControllerTest {
 
 
         final String orderId = UUID.randomUUID().toString();
-        final Date orderDate = new Date();
-        return new OrderEntity(orderId, 200.50, couponEntity, 10.0,
+        //final Date orderDate = new Date();
+        final Timestamp orderDate = new Timestamp(System.currentTimeMillis());
+        return new OrdersEntity(orderId, 200.50, couponEntity, 10.0,
                 orderDate, paymentEntity, customerEntity, addressEntity, restaurantEntity);
     }
 

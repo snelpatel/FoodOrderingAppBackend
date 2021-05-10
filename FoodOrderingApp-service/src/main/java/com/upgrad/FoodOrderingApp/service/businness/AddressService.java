@@ -30,6 +30,9 @@ public class AddressService {
     @Autowired
     CustomerAddressDao customerAddressDao;
 
+    @Autowired
+    OrderDao orderDao;
+
     //Method to save address
     @Transactional(propagation = Propagation.REQUIRED)
     public AddressEntity saveAddress(AddressEntity addressEntity,StateEntity stateEntity)throws SaveAddressException{
@@ -101,8 +104,15 @@ public class AddressService {
     //Method to delete address
     @Transactional(propagation = Propagation.REQUIRED)
     public AddressEntity deleteAddress(AddressEntity addressEntity) {
-        AddressEntity deletedAddressEntity = addressDao.deleteAddress(addressEntity);
-        return deletedAddressEntity;
+        List<OrdersEntity> ordersEntities = orderDao.getOrdersByAddress(addressEntity);
+        if(ordersEntities == null||ordersEntities.isEmpty()) { //Checking if no orders are present with this address.
+            AddressEntity deletedAddressEntity = addressDao.deleteAddress(addressEntity);
+            return deletedAddressEntity;
+        }else{
+            addressEntity.setActive(0);
+            AddressEntity updatedAddressActiveStatus =  addressDao.updateAddressActiveStatus(addressEntity);
+            return updatedAddressActiveStatus;
+        }
     }
 
     //Method to get all states

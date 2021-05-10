@@ -33,6 +33,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
 
 // This class contains all the test cases regarding the address controller
 @RunWith(SpringRunner.class)

@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.Assert.assertEquals;
 
 // This class contains all the test cases regarding the item controller
 @RunWith(SpringRunner.class)
